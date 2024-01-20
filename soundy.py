@@ -41,7 +41,6 @@ prv_pin = 12
 
 encoder_out = 0
 
-
 def encoder_clk(pin):
     global encoder_out
     clk_st = GPIO.input(clk_pin)
@@ -67,7 +66,6 @@ def read_card_id():
 curr_id = 0
 curr_track = 0
 curr_vol = 50
-
 
 #init rotary encoder variables
 tap_last = GPIO.input(tap_pin)
