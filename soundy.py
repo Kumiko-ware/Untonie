@@ -12,20 +12,55 @@ display = RPi_I2C_driver.lcd()
 
 display.lcd_display_string_pos("Antony 0.0.0.1",1,0)
 
+def name(path) :
+    end_ptr=0
+    for i in range(len(path)-1,0,-1) :
+        if end_ptr == 0 and path[i]=="." :
+            end_ptr = i
+        if path[i]=="/" :
+            break
+    return path[i+1:end_ptr]
+
+def break_16(msg):
+    last_break = 0
+    last_space = 0
+    lines = []
+    for i in range (0, len(msg)):
+        if msg[i] == " " :
+            last_space = i
+        if i % 16 == 0 and i != 0:
+            if last_space == last_break :
+                lines.append(msg[last_break:i])
+                last_break = i
+            else :
+                lines.append(msg[last_break:last_space])
+                last_break = last_space + 1
+            last_space = last_break
+    if (last_break<len(msg)):
+        lines.append(msg[last_break:])
+    if len(lines) == 0 :
+        lines.append(msg)
+    return lines
+
 # mpg123 -R  --fifo /tmp/player.pipe &
 def play(filename):
     player = open("/tmp/player.pipe","w")
     player.write("load " + filename + "\n")
     player.close
     print("PLAY " + filename)
-    
-    display.lcd_display_string_pos(filename,1,0)
+    display.lcd_clear()
+    lines = break_16(name(filename))
+    if len(lines) >0:
+        display.lcd_display_string_pos(lines[0],1,0)
+    if len(lines) >1:
+        display.lcd_display_string_pos(lines[1],2,0)
 
 def stop():
     player = open("/tmp/player.pipe","w")
     player.write("pause\n")
     player.close
-    display.lcd_display_string_pos("STOP!",1,0)
+    #display.backlight(0)
+    #display.lcd_display_string_pos("STOP!",1,0)
 
 def set_vol(volume):
     player = open("/tmp/player.pipe","w")
