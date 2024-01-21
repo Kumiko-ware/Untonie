@@ -124,8 +124,11 @@ try:
             if curr_id != 0 :
                 if "@P 0" in feedback:
                     curr_track += 1
-                    curr_track %= tracks_cnt
-                    play(tracks[curr_track])
+                    if curr_track >= tracks_cnt:
+                        curr_id = 0
+                        stop()
+                    else:
+                        play(tracks[curr_track])
 
         # Read card
         card_id = read_card_id()
