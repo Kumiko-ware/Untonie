@@ -10,7 +10,7 @@ import os
 
 display = RPi_I2C_driver.lcd()
 
-display.lcd_display_string_pos("Antony 0.0.0.1",1,0)
+display.lcd_display_string_pos("Un-tonie 0.2",1,0)
 
 def name(path) :
     end_ptr=0
@@ -141,15 +141,14 @@ try:
             #stop()
 
         # Read wheel command
-        if (encoder_out != 0):
-            curr_vol += encoder_out * 5
-            if curr_vol < 0 :
-                curr_vol = 0
-            if curr_vol > 100:
-                curr_vol = 100
-            set_vol(curr_vol)
+        if (encoder_out != 0 and curr_id != 0):
+            curr_track += encoder_out
+            curr_track %= tracks_cnt
+            if curr_track < 0:
+                cutt_track = tracks_cnt - 1
+            play(tracks[curr_track])
             encoder_out = 0
-
+            
         # Read simple buttons
         tap_st = GPIO.input(tap_pin)
         nxt_st = GPIO.input(nxt_pin)
@@ -157,15 +156,15 @@ try:
         if (tap_st == 0 and tap_last == 1):
             stop()
         if (nxt_st == 0 and nxt_last == 1 and curr_id != 0):
-            curr_track += 1
-            curr_track %= tracks_cnt
-            play(tracks[curr_track])
+            curr_vol += 5
+            if curr_vol > 100:
+                curr_vol = 100
+            set_vol(curr_vol)
         if (prv_st == 0 and prv_last == 1 and curr_id != 0):
-            curr_track -= 1
-            if curr_track < 0:
-                curr_track = tracks_cnt - 1
-            play(tracks[curr_track])
-
+            curr_vol -= 5
+            if curr_vol < 0:
+                curr_vol =0
+            set_vol(curr_vol)
         tap_last = tap_st
         nxt_last = nxt_st
         prv_last = prv_st
