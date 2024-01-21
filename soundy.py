@@ -127,6 +127,8 @@ try:
                     if curr_track >= tracks_cnt:
                         curr_id = 0
                         stop()
+                        display.lcd_clear()
+                        display.lcd_display_string_pos("No card!",1,0)
                     else:
                         play(tracks[curr_track])
 
