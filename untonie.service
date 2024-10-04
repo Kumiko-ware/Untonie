@@ -1,0 +1,12 @@
+[Unit]
+Description=Untonie box service
+After=multi-user.target
+
+[Service]
+Type=idle
+User=untonie
+ExecStart=/home/untonie/untonie-start.sh
+ExecStop=/home/untonie/untonie-stop.sh
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,47 @@
+- Install a fresh Raspian
+- Add wi-fi network with 'sudo raspi-config' (under 'system options')
+- Enable I2C, SPI and SSH with 'sudo raspi-config' (under 'interface options')
+- Add this to /boot/firmware/config.txt
+  
+  # Add a keep-alive and shutdown pins
+  dtoverlay=gpio-poweroff,active_high
+  dtoverlay=gpio-shutdown,gpio_pin=21
+
+- Install Emacs (optional), git and pip mpg123
+  - 'sudo apt-get install emacs git pip mpg123'
+
+* Needed libraries
+- git clone https://github.com/emcniece/rpi-lcd.git
+  - Note: only needed for the file RPi_I2C_driver.py, after clone just
+    copy the file to the root of untonie
+- python3 -m venv ~/untonie-py-env
+- . ~/untonie-py-env/bin/activate
+- pip install mfrc522-python
+  - But this lib is wrong! Look which is the right one, now copied above
+    git clone https://github.com/pimylifeup/MFRC522-python.git
+    and replace the scripts in ~/untonie-py-env/lib/python3.11/site-packages/mfrc522
+- pip install pyyaml
+- pip install rpi.gpio
+- pip install rpi.lgpio
+- pip install spidev
+- pip install smbus
+
+* Startup script:
+sudo cp untonie.service /lib/systemd/system/untonie.service
+sudo systemctl daemon-reload
+sudo systemctl enable untonie
+
+* Debug the shitty systemd system:
+- journalctl -u untonie.service
+- systemctl start untonie
+- systemctl stop untonie
+
+* BT
+
+- sudo apt-get install bluez-alsa-utils
+- NO! sudo apt install --no-install-recommends pulseaudio-module-bluetooth
+- bluetoothctl scan on
+- bluetoothctl pair 34:81:F4:09:3D:35
+- bluetoothctl connect 34:81:F4:09:3D:35
+
+- bluez-tools
